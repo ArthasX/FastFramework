@@ -23,7 +23,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                 return true;
             }else{
                 //没有登陆，转向登陆界面
-                request.getRequestDispatcher("/login.jsp").forward(request,response);
+                request.getRequestDispatcher("/index.html").forward(request,response);
                 return false;
             }
 //        }else{

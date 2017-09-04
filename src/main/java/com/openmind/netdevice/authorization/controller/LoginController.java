@@ -2,7 +2,7 @@ package com.openmind.netdevice.authorization.controller;
 
 import com.openmind.netdevice.authorization.service.ILoginService;
 import com.openmind.netdevice.framework.model.Result;
-import com.openmind.netdevice.framework.model.UserToken;
+import com.openmind.netdevice.authorization.model.UserToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
