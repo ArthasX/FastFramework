@@ -1,0 +1,40 @@
+Ext.define("HACAClient.model.Log", {
+    extend: "Ext.data.Model",
+    fields: [{
+        name: "workNoteId",
+        type: "auto"
+    }, {
+        name: 'workNoteNumber',
+        type: 'auto'
+    }, {
+        name: 'groupName',
+        type: 'auto'
+    }, {
+        name: 'ip',
+        type: 'auto'
+    }, {
+        name: 'content',
+        type: 'auto',
+    }, {
+        name: 'opteDate',
+        type: 'auto',
+    }, {
+        name: 'remark',
+        type: 'auto',
+    }, {
+        name: 'startTime',
+        type: 'auto',
+    }, {
+        name: 'endTime',
+        type: 'auto',
+    }, {
+        name: 'status',
+        type: 'auto',
+    }, {
+        name: 'closeDate',
+        type: 'auto',
+    }, {
+        name: 'workNoteType',
+        type: 'auto',
+    }]
+});
