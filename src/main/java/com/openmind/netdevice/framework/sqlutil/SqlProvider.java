@@ -1,5 +1,6 @@
 package com.openmind.netdevice.framework.sqlutil;
 
+import com.openmind.netdevice.framework.model.Identity;
 import com.openmind.netdevice.framework.util.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
@@ -26,6 +27,7 @@ public class SqlProvider {
     public String insert(Object bean) {
         Class<?> beanClass = bean.getClass();
         String tableName = getTableName(beanClass);
+        boolean autoIncre = isKeyAutoIncre(beanClass);
         Field[] fields = getFields(beanClass);
         StringBuilder insertSql = new StringBuilder();
         //mybatis 的参数化表示  #{xxx}
@@ -52,6 +54,10 @@ public class SqlProvider {
                     insertParaNames.add(columnName);
                     insertParas.add("#{" + field.getName() + "}");
                 }
+            }
+            if (!autoIncre) {
+                insertParaNames.add(getIdentity().getName());
+                insertParas.add(IdWorker.getId()+"");
             }
         } catch (Exception e) {
 
@@ -211,8 +217,8 @@ public class SqlProvider {
             new RuntimeException("get delete sql is exceptoin:" + e);
         }
         if (deleteParaNames.size() < 1) {
-            logger.error("There must be at least one sql parameter! class:[" + beanClass.getSimpleName() + "]");
-            throw new RuntimeException("There must be at least one sql parameter! class:[" + beanClass.getSimpleName() + "]");
+            logger.error("SqlProvider.delete:There must be at least one sql parameter! class:[" + beanClass.getSimpleName() + "]");
+            throw new RuntimeException("SqlProvider.delete:There must be at least one sql parameter! class:[" + beanClass.getSimpleName() + "]");
         }
         for (int i = 0; i < deleteParaNames.size(); i++) {
             deleteSql.append(deleteParaNames.get(i)).append("=").append(deleteParas.get(i));
@@ -264,8 +270,8 @@ public class SqlProvider {
         if (selectParaNames.size() > 0)
             selectSql.append(" where ");
         else {
-            logger.error("There must be at least one sql parameter! class:[" + beanClass.getSimpleName() + "]");
-            throw new RuntimeException("There must be at least one sql parameter! class:[" + beanClass.getSimpleName() + "]");
+            logger.error("SqlProvider.select:There must be at least one sql parameter! class:[" + beanClass.getSimpleName() + "]");
+            throw new RuntimeException("SqlProvider.select:There must be at least one sql parameter! class:[" + beanClass.getSimpleName() + "]");
         }
         for (int i = 0; i < selectParaNames.size(); i++) {
             selectSql.append(selectParaNames.get(i)).append("=").append(selectParas.get(i));
@@ -373,7 +379,7 @@ public class SqlProvider {
     //TODO selectByCond
     public String selectByPage(Map map) {
         Object bean = map.get("obj");
-        Page page =(Page) map.get("page");
+        Page page = (Page) map.get("page");
 
         return null;
     }
@@ -383,6 +389,12 @@ public class SqlProvider {
         return null;
     }
 
+    private boolean isKeyAutoIncre(Class<?> beanClass) {
+        boolean f;
+        Table table = beanClass.getAnnotation(Table.class);
+        f = table.keyAutoIncrese();
+        return f;
+    }
 
     private String getTableName(Class<?> beanClass) {
         String tableName = "";
@@ -403,8 +415,12 @@ public class SqlProvider {
         while (!beanSuperClass.getTypeName().equals("java.lang.Object")) {
             Field[] beanSuperFields = beanSuperClass.getDeclaredFields();
             re = ArrayUtils.addAll(re, beanSuperFields);
-            beanSuperClass=beanSuperClass.getSuperclass();
+            beanSuperClass = beanSuperClass.getSuperclass();
         }
         return re;
+    }
+
+    private Field getIdentity(){
+        return getFields(Identity.class)[0];
     }
 }

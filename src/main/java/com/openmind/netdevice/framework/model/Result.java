@@ -19,7 +19,7 @@ public class Result {
     private boolean success;//用于 ajax
 
     public Result() {
-
+        this.success=true;
     }
 
 

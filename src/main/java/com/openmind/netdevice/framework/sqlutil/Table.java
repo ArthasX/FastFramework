@@ -11,4 +11,5 @@ import java.lang.annotation.*;
 @Inherited
 public @interface Table {
     String value();
+    boolean keyAutoIncrese() default true;//是否自增
 }

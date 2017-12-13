@@ -9,45 +9,80 @@
     http://www.springframework.org/schema/context/spring-context.xsd
     http://www.springframework.org/schema/mvc
     http://www.springframework.org/schema/mvc/spring-mvc.xsd">
-
+    <mvc:default-servlet-handler/>
     <mvc:annotation-driven/>
     <context:annotation-config/>
-    <!--<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />-->
-    <!--<context:component-scan base-package="com.openmind.netdevice.framework.controller"/>-->
-    <!--<context:component-scan base-package="com.openmind.netdevicedao"/>-->
-    <!--<context:component-scan base-package="com.openmind.netdeviceservice"/>-->
-    <!--&lt;!&ndash; 就用来做依赖注入 &ndash;&gt;-->
-    <!--<context:component-scan base-package="com.openmind.netdevicesocket.hacoperation"/>-->
-    <context:component-scan base-package="com.openmind.netdevice"/>
-    <mvc:resources location="/WEB-INF/static/js/" mapping="/js/**"/>
-    <mvc:resources location="/WEB-INF/static/css/" mapping="/css/**"/>
-    <mvc:resources location="/WEB-INF/static/image/" mapping="/image/**"/>
+
+    <context:component-scan base-package="com.openmind.netdevice.*.dao"/>
+    <context:component-scan base-package="com.openmind.netdevice.*.service"/>
+    <context:component-scan base-package="com.openmind.netdevice.*.controller"/>
+
+    <!--<mvc:resources location="/*.js/" mapping="/**"/>-->
+    <!--<mvc:resources location="/*.css/" mapping="/pages/**"/>-->
+    <!--<mvc:resources location="/*.json/" mapping="/pages/**"/>-->
+    <!--<mvc:resources location="/*.gif/" mapping="/pages/**"/>-->
+    <!--<mvc:resources location="/WEB-INF/static/css/" mapping="/css/**"/>-->
+    <!--<mvc:resources location="/WEB-INF/static/image/" mapping="/image/**"/>-->
+    <!--静态资源不拦截-->
+    <mvc:resources location="/NetDClient/" mapping="/NetDClient/**"/>
+
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
-            <bean class="com.openmind.netdevice.framework.filter.LoginInterceptor"/>
-            <!--<mvc:exclude-mapping path="/WEB-INF/static/**"/>-->
+            <!--<mvc:mapping path="/pages/*.html"/>-->
+            <!--<mvc:exclude-mapping path="/pages/**"/>-->
+            <bean class="com.openmind.netdevice.framework.filter.LoginInterceptor">
+                <property name="excludeMappingUrl"><!-- 列表中包含的文件后缀 -->
+                    <list>
+                        <value>/login</value>
+                        <value>.scss</value>
+                        <value>.eot</value>
+                        <value>.svg</value>
+                        <value>.js</value>
+                        <value>.css</value>
+                        <value>.gif</value>
+                        <value>.png</value>
+                        <value>.map</value>
+                        <value>.jpg</value>
+                        <value>.woff3</value>
+                        <value>.woff2</value>
+                        <value>.woff</value>
+                        <value>.ttf</value>
+                        <value>.json</value>
+                    </list>
+                </property>
+            </bean>
         </mvc:interceptor>
     </mvc:interceptors>
 
-    <mvc:cors>
-        <mvc:mapping path="/netdevice/**"
-                     allowed-origins="*"
-                     allowed-methods="POST, GET, OPTIONS, DELETE, PUT"
-                     allowed-headers="Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
-                     allow-credentials="true"/>
+    <!--<mvc:cors>-->
+    <!--<mvc:mapping path="/netdevice/**"-->
+    <!--allowed-origins="*"-->
+    <!--allowed-methods="POST, GET, OPTIONS, DELETE, PUT"-->
+    <!--allowed-headers="Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"-->
+    <!--allow-credentials="true"/>-->
 
-    </mvc:cors>
-    <!--避免IE执行AJAX时，返回JSON出现下载文件 -->
-    <bean id="mappingJackson2HttpMessageConverter"
-          class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-        <property name="supportedMediaTypes">
-            <list>
-                <value>text/html;charset=UTF-8</value>
-                <value>application/json;charset=UTF-8</value>
-            </list>
-        </property>
-    </bean>
+    <!--</mvc:cors>-->
+
+
+    <!--<mvc:annotation-driven conversion-service="conversionService">-->
+    <!--<mvc:message-converters>-->
+    <!--<bean id="mappingJackson2HttpMessageConverter"-->
+    <!--class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">-->
+
+    <!--<property name="supportedMediaTypes">-->
+    <!--<list>-->
+    <!--&lt;!&ndash;<value>text/html;charset=UTF-8</value>&ndash;&gt;-->
+    <!--<value>application/json;charset=UTF-8</value>-->
+    <!--<value>text/json;charset=UTF-8</value>-->
+    <!--</list>-->
+    <!--</property>-->
+    <!--<property name="objectMapper">-->
+    <!--<bean class="com.openmind.netdevice.framework.converter.Long2StringJsonConverter"/>-->
+    <!--</property>-->
+    <!--</bean>-->
+    <!--</mvc:message-converters>-->
+    <!--</mvc:annotation-driven>-->
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <!-- 自动给后面action的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->
@@ -55,5 +90,35 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
+    <!--<mvc:annotation-driven conversion-service="conversionService">-->
+    <!--<mvc:message-converters>-->
+    <!--json的long越有精度问题，所以在后台将long全部转化成string-->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                    <property name="objectMapper">
+                        <!-- <bean class="com.fasterxml.jackson.databind.ObjectMapper">   -->
+                        <bean class="com.openmind.netdevice.framework.converter.Long2StringJsonConverter">
 
+                            <property name="dateFormat">
+                                <bean class="java.text.SimpleDateFormat">
+                                    <constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="supportedMediaTypes">
+                        <list>
+                            <!--<value>text/html;charset=UTF-8</value>-->
+                            <value>application/json;charset=UTF-8</value>
+                            <value>text/json;charset=UTF-8</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <!--</mvc:message-converters>-->
+    <!--</mvc:annotation-driven>-->
 </beans>

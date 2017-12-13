@@ -3,5 +3,47 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.1//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.openmind.netdevice.framework" >
+<mapper namespace="com.openmind.netdevice.device.dao.IDeviceMapper">
+    <resultMap id="netdevices" type="com.openmind.netdevice.device.model.NetDevice">
+        <id property="id" column="id"/>
+        <result property="deviceid" column="deviceid"/>
+        <result property="deviceType" column="devicetype"/>
+        <result property="name" column="name"/>
+        <result property="address" column="address"/>
+        <result property="deptId" column="deptid"/>
+        <result property="brand" column="brand"/>
+        <result property="portCount" column="portCount"/>
+        <result property="joinDate" column="joinDate"/>
+        <result property="optDate" column="optDate"/>
+        <result property="optUser" column="optUser"/>
+        <collection property="ports" resultMap="ports" javaType="ArrayList"/>
+    </resultMap>
+    <resultMap id="ports" type="com.openmind.netdevice.device.model.Port">
+        <id property="id" column="id_port"/>
+        <result property="netDeviceId" column="netdeviceid"/>
+        <result property="address" column="address_port"/>
+        <result property="jointDeviceType" column="jointdevicetype"/>
+        <result property="portNum" column="portnum"/>
+        <result property="optDate" column="optDate_port"/>
+        <result property="optUser" column="optUser_port"/>
+    </resultMap>
+    <select id="getDeviceWithPortByDeptId" parameterType="String" resultMap="netdevices">
+        select n.*
+        ,p.id as id_port
+        ,p.netdeviceid
+        ,p.address as address_port
+        ,p.jointdevicetype
+        ,p.portnum
+        ,p.optUser as optUser_port
+        ,p.optDate as optDate_port
+        From netdevice n
+        LEFT JOIN port p on p.netdeviceid = n.deviceid
+        <if test="deptId !=null and deptId !='' ">
+            where n.deptId=#{deptId}
+        </if>
+
+    </select>
+
+
+
 </mapper>
