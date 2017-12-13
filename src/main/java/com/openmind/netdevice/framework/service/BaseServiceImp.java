@@ -1,6 +1,8 @@
 package com.openmind.netdevice.framework.service;
 
+
 import com.openmind.netdevice.framework.dao.IBaseMapper;
+import com.openmind.netdevice.framework.model.Identity;
 import com.openmind.netdevice.framework.sqlutil.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,68 +13,68 @@ import java.util.List;
  * Created by LiuBin on 2017/6/28.
  */
 
-public class BaseServiceImp<Model extends Serializable, ID extends Serializable> implements IBaseService<Model, ID> {
+public class BaseServiceImp<T extends Serializable, ID extends Identity > implements IBaseService<T, ID> {
 
     @Autowired
-    IBaseMapper<Model> baseMapper;
+    IBaseMapper<T> baseMapper;
 
     @Override
-    public Model selectById(Class<Model> clz, ID id)throws Throwable {
+    public T selectById(Class<T> clz, ID id)throws Throwable {
         return null;
     }
 
     @Override
-    public Model deleteById(Class<Model> clz, ID id)throws Throwable {
+    public T deleteById(Class<T> clz, ID id)throws Throwable {
         return null;
     }
 
     @Override
-    public Model select(Model model)throws Throwable {
-        return baseMapper.select(model);
+    public T select(T t)throws Throwable {
+        return baseMapper.select(t);
     }
 
 
     @Override
-    public int delete(Model model)throws Throwable {
-        return baseMapper.delete(model);
+    public int delete(T t)throws Throwable {
+        return baseMapper.delete(t);
     }
 
     @Override
-    public int update(Model model)throws Throwable {
-        return baseMapper.update(model);
+    public int update(T t)throws Throwable {
+        return baseMapper.update(t);
     }
 
     @Override
-    public int insert(Model model)throws Throwable {
-        return baseMapper.insert(model);
+    public int insert(T t)throws Throwable {
+        return baseMapper.insert(t);
     }
 
     @Override
-    public int insertBatch(List<Model> list)throws Throwable {
+    public int insertBatch(List<T> list)throws Throwable {
         return baseMapper.insertBatch(list);
     }
 
     @Override
-    public List<Model> fuzzySelect(Model model)throws Throwable {
-        return baseMapper.fuzzySelect(model);
+    public List<T> fuzzySelect(T t)throws Throwable {
+        return baseMapper.fuzzySelect(t);
     }
 
     @Override
-    public Page<Model> pageSelect(Page<Model> page) throws Throwable{
-        page.setList(baseMapper.fuzzySelect(page.getT()));
-        return page;
+    public Page<T> pageSelect(Page<T> t) throws Throwable {
+        return null;
     }
+
 
     @Override
-    public int selectCount(Model model)throws Throwable {
-        return baseMapper.count(model);
+    public int selectCount(T t)throws Throwable {
+        return baseMapper.count(t);
     }
 
-    public IBaseMapper<Model> getBaseMapper()throws Throwable {
+    public IBaseMapper<T> getBaseMapper()throws Throwable {
         return baseMapper;
     }
 
-    public void setBaseMapper(IBaseMapper<Model> baseMapper)throws Throwable {
+    public void setBaseMapper(IBaseMapper<T> baseMapper)throws Throwable {
         this.baseMapper = baseMapper;
     }
 }

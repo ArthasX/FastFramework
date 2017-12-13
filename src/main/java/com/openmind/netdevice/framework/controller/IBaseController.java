@@ -10,7 +10,7 @@ import com.openmind.netdevice.framework.model.Result;
 public interface IBaseController {
     Result getAll();
 
-    Result getById(String id);
+    Result getById(Long id);
 
     Result update(long id, JSONObject object);
 

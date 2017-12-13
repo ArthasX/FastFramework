@@ -1,6 +1,7 @@
 package com.openmind.netdevice.device.model;
 
 import com.openmind.netdevice.framework.model.Identity;
+import com.openmind.netdevice.framework.sqlutil.Column;
 
 /**
  * @author LiuBin
@@ -8,4 +9,11 @@ import com.openmind.netdevice.framework.model.Identity;
  */
 public class Device extends Identity {
 
+
+    public Device() {
+    }
+
+    public Device(Long pk) {
+        super(pk);
+    }
 }

@@ -7,6 +7,7 @@ import java.io.Serializable;
  * @version Created on 2017/7/7
  */
 public interface IBaseMode extends Serializable {
+    Long getId();
 
-
+    void setId(Long id);
 }
